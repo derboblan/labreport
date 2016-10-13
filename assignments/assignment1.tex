@@ -1,2 +1,25 @@
 \section*{Assignment 1}
 We implemented a \texttt{UART} transmitter and receiver.
+
+\emph{Aufgabe: }Nach eingien einführenden Aufgabe, sollten wir einen UART Transmitter, dann einen UART-Reciver, und abschließend um beide miteinander zu Kombinieren Ein Echo auf dem FPGI zu Implementieren.
+
+
+\emph{Bearbeitung und Lösung: }Der Empfänger hat 3 Zustände $z_0$, $z_1$, $z_2$.\begin{itemize}
+
+
+\item[$z_0$:] Ausgangszustand warten auf fallende/steigende Flanke, die den Beginn der seriellen UART Kommunikation anzeigt.
+\item[$z_1$:] Empfangszustand: Für jedes Bit muss entsprechend der Übertragungsrate gewartet werden, bis das nächste gelesen werden kann. Die eingelesenen einzel Bits werden in einem Byte Array gespeichert, dass nach speichern eines Wertes ein Bit geshiftet wird, um das nächste Bit zu speichern. 
+\item[$z_2$:] im Stoppzustand wird der Bit-String wieder in den Augangszustand versetzt, außerdem wird Valid-Bit gestezt. Das heißt, dass das Byte nun ausgelesen werden kann (am Output anliegt). 
+\end{itemize}
+
+\emph{Bearbeitung und Lösung: }Der Sender hat 4 Zustände $z_0$, $z_1$, $z_2$, $z_3$.\begin{itemize}
+
+
+\item[$z_0$:] Ausgangszustand wartet auf enable. Ausgabe ist auf 0.
+\item[$z_1$:] Die Augabe, wird dem 0. Bit eines 8-Bit Strings gleichgesetzt und das 8-Bit Sting wird um eine Stelle verschoben.
+\item[$z_2$:] Nachdem 8 Bits ausgelesen, bzw. gesendet wurden Wird der vorgang beendet.
+\item[$z_3$:] rdy wird auf 1 gesetzt, um anzuzeigen, das er bereit ist neue Daten zu senden. 
+
+\end{itemize}
+
+\emph{Bearbeitung und Lösung: } Echo 
