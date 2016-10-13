@@ -1,0 +1,115 @@
+\documentclass[a4paper, twoside, ngerman, 12pt]{scrartcl}
+\usepackage{amssymb}
+\usepackage{ifxetex}
+\ifxetex
+    % XeLaTeX
+    \usepackage{fontspec,xunicode,xltxtra}
+    \usepackage{polyglossia}
+    \setmainlanguage[spelling=new,babelshorthands=true]{german}
+    \setsansfont{Gillius ADF}
+    \usepackage{ebgaramond}
+    \usepackage[]{unicode-math}
+    %    \setmainfont{XITS}
+    %    \setmathfont{XITS Math}
+\else
+    % default: pdfLaTeX
+    \usepackage[utf8]{inputenc}
+    \usepackage[ngermanb]{babel}
+    \usepackage[T1]{fontenc}
+    \usepackage[babel=true]{microtype}
+    \usepackage{lmodern}
+\fi
+\usepackage{amsmath}
+
+\usepackage{eurosym}
+\usepackage{parskip}
+\usepackage{svg}
+\usepackage{lscape}
+\usepackage[inner=2.3cm,outer=4.6cm,top=3.3cm,bottom=6.6cm]{geometry}
+
+\usepackage[nottoc]{tocbibind}
+\usepackage[fixlanguage]{babelbib}
+%\selectbiblanguage{german}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{xcolor}
+    \definecolor{lblue}{cmyk}{0.92, 0.7, 0, 0}            % #2020c0
+\usepackage[hyphens]{url}
+\usepackage[bookmarks]{hyperref}
+    \hypersetup{
+        colorlinks=true,  % false: boxed links; true: colored links
+        linkcolor=lblue,   % color of internal links
+        citecolor=lblue,   % color of links to bibliography
+        filecolor=lblue,   % color of file links
+        urlcolor=lblue     % color of external links
+    }
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead[\nouppercase\leftmark]{}
+\rhead[]{\nouppercase\rightmark}
+\lfoot[\thepage]{}
+\rfoot[]{\thepage}
+
+%\newfontfamily\sectionfont[Color=MSLightBlue]{Times New Roman}
+
+\linespread{1.2} % Zeilenhöhe wird auf Faktor 1.25 gesetzt
+\setlength{\parindent}{0cm}
+\graphicspath{{img/}}
+%\renewcommand*{\figureformat}{}
+% Die Boxen zum zählen der Verdrängungsindikatoren als Matheoperatoren, damit das spacing einheitlich ist
+\DeclareMathOperator{\bsq}{\blacksquare}
+\DeclareMathOperator{\wsq}{\square}
+\usepackage{pifont}
+%\renewcommand{\labelitemi}{\ding{112}} % \blacktriangleright
+
+\title{Hardware Security}
+\subtitle{Labreport}
+
+
+\date{}
+\begin{document}
+    \pagenumbering{roman}
+    \begin{titlepage}
+    \newgeometry{inner=3.45cm,outer=3.45cm,top=3.3cm,bottom=4.6cm}
+        \begin{figure*}
+            \begin{flushright}
+%                \includegraphics[width=0.4\textwidth]{img/Logokurz.pdf}
+            \end{flushright}
+        \end{figure*}
+        \vspace*{-1cm}
+        \hrule
+        \vspace{.2cm}
+        \begin{center}
+            \vfill
+            \textsf{\textbf{\Huge{Hardware Security}}}\\[1.5em]
+            \textsf{\LARGE{Labreport}}
+            \vfill
+        \end{center}
+        \vfill
+        \hrule
+        \vspace{.2cm}
+        \large{Berlin, October 2016}
+    \end{titlepage}
+    
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+    
+    \section*{Assignment 1}
+    Hier steht ein Testtext
+%    \input{tex/1-darstellung.tex}
+    
+    \section*{Assignment 2}
+%    \input{tex/2-gefluechtete.tex}
+    
+    \section*{Assignment 3}
+%    \input{tex/3-aktive.tex}
+    
+    \section*{Assignment 4}
+%    \input{tex/4-sonstiges.tex}
+    
+    \section*{Assignment 5}
+\end{document}
