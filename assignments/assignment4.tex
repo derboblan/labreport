@@ -1,2 +1,23 @@
 \section*{Assignment 4}
 The task was to bruteforce a 4 digit pin.
+
+\emph{Aufgabe: }We had an FPGA configured by the tutors. We should enter it, without any Knowledge what it does.
+
+\emph{Bearbeitung und Lösung: }Wenn die Von den Tutoren Programmierte FPGA (FPGA-PIN) über den Throughput an den Computer anschloss und die resettaste des FPGA-PIN betätigte, Würde man auf dem Cmputerbildschirm zur eingabe eines PINs aufgefordert. Nach der eingabe von Vier Ziffern zeigte der Computer an das der Pin falsch sei \emph{"Incorrect Pin"}. erst nache inigen Sekunden war es wieder möglich erneut einen Pin einzugeben. 
+Der Lösungsansatz war trozdem eine Implementierung eines Brutforce algotythmus. Um die Wartezeit nach einer Falscheingabe zu umgehen, wurde jedoch der Reset Pin des FPGA-Pin angeprochen um die FPGA zu resetten und so sofort einen neuen Pin eingeben zu können. 
+Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
+
+\begin{itemize}
+
+
+\item[START] Ist der erste Zustand der STate mashine, in dem die 4 stellen des Pins sowie einem 5. Übertragszahl auf 0 gesetzt. diese 5 Ziffern werden als 8-Bit gehandhabt. Außerdem werden andere Register initialisiert.
+
+\item[SEND] In diesem Zustand das erste Byte des 4 Stelligen Pins an den UART-Tranmitter übergeben, welcher es direkt an die FPGA-Pin weiterleitet. nun werden alle stellen des Pins um eine stelle verrückt, wobei die vorher erste stelle auf die Hilfvariable übertragen wird. Nun wird der Vorgang wiederholt und die neue erste Stelle des Pins via Transmitter übermittelt. Dieser vorgang findet statt, bis alle zeichen wieder an ihrem orginalen ort sind. 
+
+\item[INC] Hier wird Die nidrigste Stelle des Pins um 1 erhöht. ist diese Stelle bereits 9 muss der übertrag berücksichtigt werden. Außerdem wird der Aktuelle Pin an den Computer Übergeben, um den Vortgang verfolgen zu können.
+
+\item[RECIVE] in diesem Zustand wird auf die Antwort des FPGA-Pin gewartet. Beginnt die Antwort mit einem "I" wie bei Incorrect Pin, wird die Resetfunktion des FPGA-Pin betätigt und die Statmashine begibt sich wieder in den SEND zustand und setzt die Bruteforce Attacke fort.
+
+\end{itemize}
+
+
