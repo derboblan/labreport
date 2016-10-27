@@ -1,0 +1,29 @@
+\begin{tikzpicture}[node distance=5cm]
+%	\draw[gray,very thin] (0,0) grid (11,7); % Grid for easy orientation
+	\tikzstyle{component} = [
+		rectangle, draw=black, minimum width=3cm, minimum height=3cm, above right
+	]
+	\tikzstyle{component_caption} = [
+		below right
+	]
+
+	\node (n1) [component] {}
+		node [below right] at (n1.south west) {\textsf{\textbf{Computer}}}
+		coordinate [label={below left:\texttt{tx}}] (computer_tx) at (3,2) % oben rechts
+		coordinate [label={above left:\texttt{rx}}] (computer_rx) at (3,1) % unten rechts
+	;
+
+	\node (n2) [component, right of=n1] {}
+		node [below right] at (n2.south west) {\textsf{\textbf{FPGA}}}
+		node (r1) [below=.3cm ] at (n2.133){rx} % oben links : 180 - 45
+		node (t2) [below=.3cm] at (n2.45){tx} % oben rechts
+		node [above left] at (n2.-45){rx} % unten rechts
+		node [above right] at (n2.225){tx} % unten links : 180 + 45
+	;
+
+	\draw[->] (0,2) -- (computer_tx);
+	\draw[->] (0,1) -- (computer_rx);
+	\node (n3) [component, right of=n2] {}
+			node [below right] at (n3.south west) {\textsf{\textbf{Lock}}}
+	;
+\end{tikzpicture}
