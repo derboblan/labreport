@@ -63,11 +63,7 @@
 	% Lock
 	\node (Lock) [component_small, below right, xshift=1cm] at (FPGA.north east) {}
 		% Caption
-<<<<<<< HEAD
 		node [caption] at (Lock.south west) { \small{\textsf{\textbf{Lock}}} }
-=======
-		node [caption] at (Lock.south west) { \textsf{\textbf{Lock}} }
->>>>>>> e34058c2c9cf70651bbe017e1c7e4f2848a23036
 		% In/outputs rechts
 		coordinate [yshift=0.333cm, label={ right:\footnotesize{\texttt{rst}} }] (Lock_rst) at (Lock.south west) % unten
 		coordinate [yshift=0.999cm, label={ right:\footnotesize{\texttt{rx}} }]   (Lock_rx)   at (Lock.south west) % mitte
