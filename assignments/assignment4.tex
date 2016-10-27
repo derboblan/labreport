@@ -3,9 +3,24 @@ The task was to bruteforce a 4 digit pin.
 
 \emph{Aufgabe: }We had an FPGA configured by the tutors. We should enter it, without any Knowledge what it does.
 
+\begin{figure}
+    \begin{center}
+        \input{assignments/images/assignment4-schematic-v1.tikz}
+        \caption{Schematic of bruteforce version 1: FPGA only relays communication and resets the lock.}
+    \end{center}
+\end{figure}
+
 \emph{Bearbeitung und Lösung: }Wenn die Von den Tutoren Programmierte FPGA (FPGA-PIN) über den Throughput an den Computer anschloss und die resettaste des FPGA-PIN betätigte, Würde man auf dem Cmputerbildschirm zur eingabe eines PINs aufgefordert. Nach der eingabe von Vier Ziffern zeigte der Computer an das der Pin falsch sei \emph{"Incorrect Pin"}. erst nache inigen Sekunden war es wieder möglich erneut einen Pin einzugeben. 
 Der Lösungsansatz war trozdem eine Implementierung eines Brutforce algotythmus. Um die Wartezeit nach einer Falscheingabe zu umgehen, wurde jedoch der Reset Pin des FPGA-Pin angeprochen um die FPGA zu resetten und so sofort einen neuen Pin eingeben zu können. 
 Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
+
+\begin{figure}
+    \begin{center}
+        \input{assignments/images/assignment4-schematic-v1.tikz}
+        \caption{Schematic of bruteforce version 2: FPGA does all the work.}
+    \end{center}
+\end{figure}
+
 
 \begin{itemize}
 
