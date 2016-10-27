@@ -6,7 +6,7 @@ The task was to bruteforce a 4 digit pin.
 \begin{figure}
     \begin{center}
         \input{assignments/images/assignment4-schematic-v1.tikz}
-        \caption{Schematic of bruteforce version 1: FPGA only relays communication and resets the lock.}
+        \caption{In this setup, all possible PINs are computed on the computer and transmitted to the device; the FPGA just relays the communication. But it also listens to the computers output bitstream to reset the mircrocontroller upon receiving a special command.}
     \end{center}
 \end{figure}
 
@@ -17,7 +17,7 @@ Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State 
 \begin{figure}
     \begin{center}
         \input{assignments/images/assignment4-schematic-v2.tikz}
-        \caption{Schematic of bruteforce version 2: FPGA does all the work.}
+        \caption{Now the FPGA calculates the 4 digit numbers, sends them to the device and decodes the answer bitstream in order to reset the microcontroller. The computer is only needed as output device in this case.}
     \end{center}
 \end{figure}
 
