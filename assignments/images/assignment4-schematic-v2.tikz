@@ -57,7 +57,7 @@
 	\node (Transmitter) at (FPGA.south west) [component_small, above right, shift={(0.5, 0.75)}] {}
 		node [caption] at (Transmitter.south west) { \textsf{\footnotesize{\textbf{UART Trans.}}} }
 		% Output links
-		coordinate [yshift=1cm, label={ right: \scriptsize{\textsf{\texttt{tx}}} }] (Transmitter_tx) at (Transmitter.south west) % unten
+		coordinate [yshift=1cm, label={ right: \scriptsize{\textsf{\texttt{dout}}} }] (Transmitter_dout) at (Transmitter.south west) % unten
 		% Inputs links
 		coordinate [yshift=0.666cm,                 label={ left : \scriptsize{\texttt{enable}} }]           (Transmitter_enable)           at (Transmitter.south east) % unten
 		coordinate [yshift=1.333cm+0.15cm, label={ left : \scriptsize{\texttt{data\_in}} }] (Transmitter_data_in)    at (Transmitter.south east) % oben
@@ -94,9 +94,9 @@
 	\draw[conn]  (FPGA_tx0) -- (Computer_rx);
 	
 	% FPGA internal
-	\coordinate[xshift=-0.2cm] (h1) at (Transmitter_tx);
+	\coordinate[xshift=-0.2cm] (h1) at (Transmitter_dout);
 	\coordinate[xshift=0.3cm] (h2) at (FPGA_tx0);
- 	\draw[conn]  (Transmitter_tx) -- (h1) -- (h2) -- (FPGA_tx0);
+ 	\draw[conn]  (Transmitter_dout) -- (h1) -- (h2) -- (FPGA_tx0);
 	\coordinate[shift=({4.8cm, -1.166cm})] (ha) at  (FPGA_tx0) ;
 	\coordinate[yshift=0.5cm] (hb) at  (ha) ;
 	\draw[conn] (FPGA_tx0) +(0.3, -1.166) -- (ha) -- (hb) -- (FPGA_tx1);
