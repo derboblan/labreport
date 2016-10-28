@@ -1,6 +1,9 @@
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc,intersections,through,backgrounds}
 \begin{tikzpicture}
+% 	\tikzset{
+% 	  every node/.style={scale=1.1}
+% 	}	
 	\tikzset{comp/.style={
 		rectangle, draw=black, thick
 	}}	

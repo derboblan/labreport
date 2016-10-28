@@ -1,7 +1,10 @@
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc,intersections,through,backgrounds}
 \begin{tikzpicture}
-	\tikzset{comp/.style={
+% 	\tikzset{
+% 	  every node/.style={scale=1.1}
+% 	}	
+\tikzset{comp/.style={
 		rectangle, draw=black, thick
 	}}	
 	\tikzset{component/.style={
@@ -40,8 +43,8 @@
 
 		% Interna
 		node (UART_idle) [component_tiny, shift={(-1.725cm, 0.55cm)}] at (FPGA)           { \scriptsize{\textsf{\texttt{UART idle}}} }
-	 	node (Mux1)          [component_tiny, shift={(-1.2cm, -0.05cm)}]  at (FPGA_tx1)   { \scriptsize{\textsf{\texttt{Mux}}} }
-	 	node (Mux2)          [component_tiny, shift={(-0.4cm, -0.3cm)}]    at (FPGA.east) { \scriptsize{\textsf{\texttt{Mux}}} }
+	 	node (Mux1)          [component_tiny, shift={(-1.3cm, -0.05cm)}]  at (FPGA_tx1)   { \scriptsize{\textsf{\texttt{Mux}}} }
+	 	node (Mux2)          [component_tiny, shift={(-0.45cm, -0.3cm)}]    at (FPGA.east) { \scriptsize{\textsf{\texttt{Mux}}} }
 	;
 
 	% Logic
@@ -130,7 +133,7 @@
 		\draw[conn, yshift=0.5cm] ([yshift=0.05cm] Mux1.east) -- (FPGA_tx1); % Mux1 -> tx1
 
 		% Connections to/from Mux2
-		\draw[conn, name path=Logic--Mux2] ([xshift=0.5cm] Logic.south) -- ([shift={(0.5cm, -0.9cm)}] Logic.south) -| ([xshift=-0.35cm] Mux2.west) -- (Mux2.west);
+		\draw[conn, name path=Logic--Mux2] ([xshift=0.5cm] Logic.south) -- ([shift={(0.5cm, -0.9cm)}] Logic.south) -| ([xshift=-0.25cm] Mux2.west) -- (Mux2.west);
 		\draw[conn, draw=red, name path=UART_idle--Mux2] (UART_idle) -| (Mux2); % UART_idle -> Mux2
 		\draw[conn, draw=green, name path=Transmitter_dout--Mux2] ([yshift=0.2cm] Transmitter_dout) -| ([xshift=-0.2cm] Mux2.north); % dout -> Mux2
 		\draw[conn, draw=blue] (FPGA_rx1) -| ([xshift=0.2cm] Mux2.north);	 % rx1 -> Mux2
