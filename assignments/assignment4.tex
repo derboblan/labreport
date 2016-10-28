@@ -3,10 +3,14 @@ The task was to bruteforce a 4 digit pin.
 
 \emph{Aufgabe: }We had an FPGA configured by the tutors. We should enter it, without any Knowledge what it does.
 
-\begin{figure}
+\subsubsection*{An easy solution}
+See figure \ref{as4-schematic-1} (p.~\pageref{as4-schematic-1}).
+
+\begin{figure}[htb]
     \begin{center}
         \input{assignments/images/assignment4-schematic-v1.tikz}
-        \caption{In this setup, all possible PINs are computed on the computer and transmitted to the device; the FPGA just relays the communication. But it also listens to the computers output bitstream to reset the mircrocontroller upon receiving a special command.}
+        \caption{In this setup, all possible PINs are computed on the computer and transmitted to the device. The FPGA just relays the communication and understands the computers output bitstream to reset the mircrocontroller upon receiving a special command.}
+        \label{as4-schematic-1}
     \end{center}
 \end{figure}
 
@@ -14,10 +18,14 @@ The task was to bruteforce a 4 digit pin.
 Der Lösungsansatz war trozdem eine Implementierung eines Brutforce algotythmus. Um die Wartezeit nach einer Falscheingabe zu umgehen, wurde jedoch der Reset Pin des FPGA-Pin angeprochen um die FPGA zu resetten und so sofort einen neuen Pin eingeben zu können. 
 Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
 
-\begin{figure}
+\subsubsection*{The fast way}
+See figure \ref{as4-schematic-2} (p.~\pageref{as4-schematic-2}).
+
+\begin{figure}[htb]
     \begin{center}
         \input{assignments/images/assignment4-schematic-v2.tikz}
-        \caption{Now the FPGA calculates the 4 digit numbers, sends them to the device and decodes the answer bitstream in order to reset the microcontroller. The computer is only needed as output device in this case.}
+        \caption{Now the FPGA calculates the 4 digit numbers, sends them to the device and decodes the answer bitstream in order to reset the microcontroller. The computer is passive in this configuration and only needed as output device, so we safely ignore its transmissions.}
+        \label{as4-schematic-2}
     \end{center}
 \end{figure}
 
