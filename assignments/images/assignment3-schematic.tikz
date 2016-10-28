@@ -1,23 +1,24 @@
 \usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc,intersections,through,backgrounds}
 \begin{tikzpicture}
-	\tikzstyle{comp} = [
+	\tikzset{comp/.style={
 		rectangle, draw=black, thick
-	]
-	\tikzstyle{component} = [
+	}}	
+	\tikzset{component/.style={
 		comp, minimum width=6cm, minimum height=5cm, very thick
-	]
-	\tikzstyle{component_small} = [
+	}}
+	\tikzset{component_small/.style={
 		comp, minimum width=2cm, minimum height=2cm, thick
-	]
-	\tikzstyle{component_tiny} = [
+	}}
+	\tikzset{component_tiny/.style={
 		comp, inner sep=0.1cm, semithick
-	]
-	\tikzstyle{caption} = [
+	}}
+	\tikzset{caption/.style={
 		below right
-	]
-	\tikzstyle{conn} = [
+	}}
+	\tikzset{conn/.style={
 		-{Latex[length=2mm]}
-	]
+	}}
 	
 	% FPGA
 	\node (FPGA) [component] at (0,0) {}
@@ -79,19 +80,19 @@
 	\node (Light_1) [component_small, below right, xshift=1cm] at (FPGA.north east) {}
 		% Caption
 		node [caption] at (Light_1.south west) { \small{\textsf{\textbf{Light\textsubscript{1}}}} }
-		% In/outputs rechts
+		% In/outputs links
 		coordinate [yshift=0.333cm, label={ right:\footnotesize{\texttt{tx}} }]   (Light_1_tx)   at (Light_1.south west) % unten
 		coordinate [yshift=0.999cm, label={ right:\footnotesize{\texttt{rx}} }]   (Light_1_rx)   at (Light_1.south west) % mitte
 		coordinate [yshift=1.666cm, label={ right:\footnotesize{\texttt{rst}} }] (Light_1_rst) at (Light_1.south west) % oben
-
 	;
+
 	% Light_2
 	\node (Light_2) [component_small, above right, xshift=1cm] at (FPGA.south east) {}
 		% Caption
 		node [caption] at (Light_2.south west) { \small{\textsf{\textbf{Light\textsubscript{2}}}} }
-		% In/outputs rechts
+		% In/outputs links
 		coordinate [yshift=0.666cm, label={ right:\footnotesize{\texttt{tx}} }]   (Light_2_tx)   at (Light_2.south west) % unten
-		coordinate [yshift=1.333cm, label={ right:\footnotesize{\texttt{rx}} }]   (Light_2_rx)   at (Light_2.south west) % mitte
+		coordinate [yshift=1.333cm, label={ right:\footnotesize{\texttt{rx}} }]   (Light_2_rx)   at (Light_2.south west) % oben
 	;
 
 	% FPGA -> Lights
@@ -106,26 +107,31 @@
 	\draw[conn] (Computer_tx) -- (FPGA_rx0);
 	
 	% FPGA internal
-	\draw[conn] (FPGA_rx0) -- ([xshift=0.85cm] FPGA_rx0) |- (FPGA_tx0); % Computer input feedback loop
-	\draw[conn] (Logic.east) |- (FPGA_restart); %logic -> restart
+		\draw[conn, name path=FPGA_rx0--FPGA_tx0] (FPGA_rx0) -- ([xshift=0.85cm] FPGA_rx0) |- (FPGA_tx0); % Computer input feedback loop
+		\draw[conn] (Logic.east) |- (FPGA_restart); %logic -> restart
 	
-		% Connections from/to Receiver
- 	\draw[conn] (FPGA_rx0) -- ([xshift=0.2cm] FPGA_rx0)  |- (Receiver_din); % tx0 -> receiver
-	\draw[conn, very thick] (Receiver_data_out) -| ([xshift=0.05cm] Logic.south);  % receiver -> logic
-	\draw[conn] (Receiver_valid) -|  ([xshift=0.225cm] Logic.south); % receiver -> logic
+		% Connections to/from Receiver
+	 	\draw[conn, name path=FPGA_rx0--Receiver_din] (FPGA_rx0) -- ([xshift=0.2cm] FPGA_rx0)  |- (Receiver_din); % tx0 -> receiver
+		\draw[conn, very thick] (Receiver_data_out) -| ([xshift=0.05cm] Logic.south);  % receiver -> logic
+		\draw[conn] (Receiver_valid) -|  ([xshift=0.225cm] Logic.south); % receiver -> logic
 
 		% Connections from/to Mux1
-	\draw[conn] ([xshift=0.5cm] Logic.south) |- (Mux1.west);
-	\draw[conn, draw=red] (UART_idle) -| (Mux1); % UART_idle -> Mux1	
-	\draw[conn, color=green] (Transmitter_dout) -- ([yshift=0.2cm] Transmitter_dout) -| ([xshift=-0.2cm] Mux1.south); % dout -> Mux1
-	\draw[conn, color=blue] (FPGA_rx2) -| ([xshift=0.2cm] Mux1.south); % rx2 -> Mux1
-	\draw[conn, yshift=0.5cm] ([yshift=0.05cm] Mux1.east) -- (FPGA_tx1); % Mux1 -> tx1
+		\draw[conn, name path=Logic--Mux1] ([xshift=0.5cm] Logic.south) |- (Mux1.west);
+		\draw[conn, draw=red, name path=UART_idle--Mux1] (UART_idle) -| (Mux1); % UART_idle -> Mux1	
+		\draw[conn, color=green, name path=Transmitter_dout--Mux1] (Transmitter_dout) -- ([yshift=0.2cm] Transmitter_dout) -| ([xshift=-0.2cm] Mux1.south); % dout -> Mux1
+		\draw[conn, color=blue] (FPGA_rx2) -| ([xshift=0.2cm] Mux1.south); % rx2 -> Mux1
+		\draw[conn, yshift=0.5cm] ([yshift=0.05cm] Mux1.east) -- (FPGA_tx1); % Mux1 -> tx1
 
 		% Connections from/to Mux2
-	\draw[conn] ([xshift=0.5cm] Logic.south) -- ([shift={(0.5cm, -0.9cm)}] Logic.south) -| ([xshift=-0.35cm] Mux2.west) -- (Mux2.west); % TODO
-	\draw[conn, draw=red] (UART_idle) -| (Mux2); % UART_idle -> Mux2
-	\draw[conn, draw=green] ([yshift=0.2cm] Transmitter_dout) -| ([xshift=-0.2cm] Mux2.north); % dout -> Mux2
-	\draw[conn, draw=blue] (FPGA_rx1) -| ([xshift=0.2cm] Mux2.north);	 % rx1 -> Mux2
-	\draw[conn] (Mux2) |- (FPGA_tx2); % Mux2 -> tx2
-
+		\draw[conn, name path=Logic--Mux2] ([xshift=0.5cm] Logic.south) -- ([shift={(0.5cm, -0.9cm)}] Logic.south) -| ([xshift=-0.35cm] Mux2.west) -- (Mux2.west); % TODO
+		\draw[conn, draw=red, name path=UART_idle--Mux2] (UART_idle) -| (Mux2); % UART_idle -> Mux2
+		\draw[conn, draw=green, name path=Transmitter_dout--Mux2] ([yshift=0.2cm] Transmitter_dout) -| ([xshift=-0.2cm] Mux2.north); % dout -> Mux2
+		\draw[conn, draw=blue] (FPGA_rx1) -| ([xshift=0.2cm] Mux2.north);	 % rx1 -> Mux2
+		\draw[conn] (Mux2) |- (FPGA_tx2); % Mux2 -> tx2
+		
+		% Intersections
+		\fill[name intersections={of=FPGA_rx0--FPGA_tx0 and FPGA_rx0--Receiver_din, total=\t}] (intersection-\t) circle (0.4mm);
+		\fill[name intersections={of=Logic--Mux1 and Logic--Mux2, total=\t}] (intersection-\t) circle (0.4mm);
+		\fill[red, name intersections={of=UART_idle--Mux1 and UART_idle--Mux2, total=\t}] (intersection-\t) circle (0.4mm);
+		\fill[green, name intersections={of=Transmitter_dout--Mux1 and Transmitter_dout--Mux2, total=\t}] (intersection-\t) circle (0.4mm);
 \end{tikzpicture}
