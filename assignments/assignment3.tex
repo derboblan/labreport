@@ -1,9 +1,12 @@
 \section*{Assignment 3}
 The traffic lights hack.
 
-\begin{figure}
+See figure \ref{as3-schematic} (p.~\pageref{as3-schematic}).
+
+\begin{figure}[htb]
     \begin{center}
         \input{assignments/images/assignment3-schematic.tikz}
-        \caption{Schematic of Ampel Hack}
+        \caption{FPGA in the middle with three modes of operation \textsf{Throughput} (blue), \textsf{Green} (green) and \textsf{Red} (red) controlled via the computer. The transmitter is always enabled and has a fixed input byte producing a cyclic bitstream \texttt{dout}. Output and hence operation mode are selected by multiplexer.}
+        \label{as3-schematic}
     \end{center}
 \end{figure}
