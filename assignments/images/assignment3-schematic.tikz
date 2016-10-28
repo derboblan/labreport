@@ -1,14 +1,16 @@
 \usetikzlibrary{arrows.meta}
 \begin{tikzpicture}
-%	\draw[gray,very thin] (0,0) grid (11,7); % Grid for easy orientation
 	\tikzstyle{comp} = [
-		rectangle, draw=black
+		rectangle, draw=black, thick
 	]
 	\tikzstyle{component} = [
-		comp, minimum width=5.5cm, minimum height=4.5cm
+		comp, minimum width=6cm, minimum height=5cm, very thick
 	]
-\tikzstyle{component_small} = [
-		comp, minimum width=2cm, minimum height=2cm
+	\tikzstyle{component_small} = [
+		comp, minimum width=2cm, minimum height=2cm, thick
+	]
+	\tikzstyle{component_tiny} = [
+		comp, inner sep=0.1cm, semithick
 	]
 	\tikzstyle{caption} = [
 		below right
@@ -20,57 +22,110 @@
 	% FPGA
 	\node (FPGA) [component] at (0,0) {}
 		% Caption
-		node [caption] at (FPGA.south west) { \textsf{\textbf{FPGA}} }
-		% Interfaces linke Seite
-		coordinate [yshift=2.5cm+0.666cm, label={ above right : \footnotesize{$\texttt{rx}_0$} }] (FPGA_rx0) at (FPGA.south west) % unten links
-		coordinate [yshift=2.5cm+1.333cm, label={ above right : \footnotesize{$\texttt{tx}_0$} }] (FPGA_tx0) at (FPGA.south west) % oben links
-		% Interfaces rechte Seite
-		coordinate [yshift=2.5cm+0.666cm, label={ above left : \footnotesize{$\texttt{tx}_1$} }] (FPGA_tx1) at (FPGA.south east) % unten links
-		coordinate [yshift=2.5cm+1.333cm, label={ above left : \footnotesize{$\texttt{rx}_1$} }] (FPGA_rx1) at (FPGA.south east) % oben links
+		node [caption] at (FPGA.south west) { \small{\textsf{\textbf{FPGA}}} }
+		
+		% In/-outputs links
+		coordinate [yshift=3cm+0.666cm, label={ above right : \footnotesize{$\texttt{rx}_0$} }] (FPGA_rx0) at (FPGA.south west) % unten
+		coordinate [yshift=3cm+1.333cm, label={ above right : \footnotesize{$\texttt{tx}_0$} }] (FPGA_tx0) at (FPGA.south west) % oben
+
+		% In/outputs  rechts oben
+		coordinate [yshift=3cm,                    label={ above left : \footnotesize{$\texttt{rx}_1$} }]      (FPGA_rx1)       at (FPGA.south east)  % unten
+		coordinate [yshift=3cm+0.666cm, label={ above left : \footnotesize{$\texttt{tx}_1$} }]      (FPGA_tx1)       at (FPGA.south east) % mitte
+		coordinate [yshift=3cm+1.333cm, label={ above left : \footnotesize{$\texttt{restart}$} }] (FPGA_restart) at (FPGA.south east) % oben
+		% In/outputs  rechts unten
+		coordinate [yshift=0.666cm,           label={ below left : \footnotesize{$\texttt{rx}_2$} }]      (FPGA_rx2)        at (FPGA.south east)  % unten
+		coordinate [yshift=1.333cm,           label={ below left : \footnotesize{$\texttt{tx}_2$} }]      (FPGA_tx2)        at (FPGA.south east) % oben
+
+		% Interna
+		node (UART_idle) [component_tiny, shift={(-1.725cm, 0.55cm)}] at (FPGA)           { \scriptsize{\textsf{\texttt{UART idle}}} }
+	 	node (Mux1)          [component_tiny, shift={(-1.2cm, -0.05cm)}]  at (FPGA_tx1)   { \scriptsize{\textsf{\texttt{Mux}}} }
+	 	node (Mux2)          [component_tiny, shift={(-0.4cm, -0.3cm)}]    at (FPGA.east) { \scriptsize{\textsf{\texttt{Mux}}} }
 	;
 
-% Computer
-	\node (Computer) [component_small, below left, xshift=-1cm] at (FPGA.north west) {}
-		% Caption
-		node [caption] at (Computer.south west) { \small{\textsf{\textbf{Computer}}} }
-		% Interfaces
-		coordinate [yshift=0.666cm, label={ left:\footnotesize{\texttt{tx}} }] (computer_tx) at (Computer.south east) % unten rechts
-		coordinate [yshift=1.333cm, label={ left:\footnotesize{\texttt{rx}} }] (computer_rx) at (Computer.south east) % oben rechts
-	;
-
-	% Lock
-	\node (Lock) [component_small, below right, xshift=1cm] at (FPGA.north east) {}
-		% Caption
-		node [caption] at (Lock.south west) { \textsf{\textbf{Lock}} }
-		% Interfaces
-		coordinate [yshift=0.666cm, label={ right:\footnotesize{\texttt{rx}} }] (lock_rx) at (Lock.south west) % unten links
-		coordinate [yshift=1.333cm, label={ right:\footnotesize{\texttt{tx}} }] (lock_tx) at (Lock.south west) % oben links
+	% Logic
+	\node (Logic) at (FPGA.north) [comp, minimum height=1cm, minimum width=2cm, below, shift={(-0.45, -0.25)}] {}
+		node [caption] at (Logic.south west) { \textsf{\footnotesize{\textbf{Logic}}} }
 	;
 
 	% Receiver
 	\node (Receiver) at (FPGA.south west) [component_small, above right, shift={(0.5, 0.75)}] {}
 		% Caption
 		node [caption] at (Receiver.south west) { \textsf{\footnotesize{\textbf{UART Recv.}}} }
-		% Interfaces linke Seite
-		coordinate [yshift=1cm, label={ right : \scriptsize{\texttt{din}} }] (din) at (Receiver.south west) % oben links
-		% Interfaces rechte Seite
-		coordinate [yshift=1.333cm+0.15cm, label={ left : \scriptsize{\texttt{data\_out}} }] (data_out) at (Receiver.south east)
-		coordinate [yshift=1.333cm-0.15cm, label={ left : \scriptsize{$[7:0]$} }] (data_out2) at (Receiver.south east)
-		coordinate [yshift=0.666cm, label={ left : \scriptsize{\texttt{valid}} }] (valid) at (Receiver.south east)
-		% Internal connection endpoints
-		coordinate [shift={(0.5cm,1.333cm)}] (data_out_end) at (Receiver.south east)
+		% Input links
+		coordinate [yshift=1cm, label={ right : \scriptsize{\texttt{din}} }] (Receiver_din) at (Receiver.south west)
+		% Outpus links
+		coordinate [yshift=0.666cm,                 label={ left : \scriptsize{\texttt{valid}} }]           (Receiver_valid)           at (Receiver.south east) % unten
+		coordinate [yshift=1.333cm+0.15cm, label={ left : \scriptsize{\texttt{data\_out}} }] (Receiver_data_out)    at (Receiver.south east) % oben
+		coordinate [yshift=1.333cm-0.15cm,  label={ left : \scriptsize{$[7:0]$} }]                     (Receiver_data_out2) at (Receiver.south east) % mitte
 	;
 
-	% Computer -> FPGA
-	\draw[conn] (computer_tx) -- (FPGA_rx0);
-	\draw[conn] (FPGA_rx0) -- (FPGA_tx1);
-	\draw[conn] (FPGA_tx1) -- (lock_rx);
+	% Transmitter
+	\node (Transmitter) at (FPGA.south east) [component_small, above left, shift={(-1.15, 0.75)}] {}
+		node [caption] at (Transmitter.south west) { \textsf{\footnotesize{\textbf{UART Trans.}}} }
+		% Output oben
+		coordinate [label={ below : \scriptsize{\textsf{\texttt{dout}}} }] (Transmitter_dout) at (Transmitter.north) % unten
+	;
+
+	% Computer
+	\node (Computer) [component_small, below left, xshift=-1cm] at (FPGA.north west) {}
+		% Caption
+		node [caption] at (Computer.south west) { \small{\textsf{\textbf{Computer}}} }
+		% In/outputs rechts
+		coordinate [yshift=0.666cm, label={ left:\footnotesize{\texttt{tx}} }] (Computer_tx) at (Computer.south east) % unten
+		coordinate [yshift=1.333cm, label={ left:\footnotesize{\texttt{rx}} }] (Computer_rx) at (Computer.south east) % oben
+	;
+
+	% Light 1
+	\node (Light_1) [component_small, below right, xshift=1cm] at (FPGA.north east) {}
+		% Caption
+		node [caption] at (Light_1.south west) { \small{\textsf{\textbf{Light\textsubscript{1}}}} }
+		% In/outputs rechts
+		coordinate [yshift=0.333cm, label={ right:\footnotesize{\texttt{tx}} }]   (Light_1_tx)   at (Light_1.south west) % unten
+		coordinate [yshift=0.999cm, label={ right:\footnotesize{\texttt{rx}} }]   (Light_1_rx)   at (Light_1.south west) % mitte
+		coordinate [yshift=1.666cm, label={ right:\footnotesize{\texttt{rst}} }] (Light_1_rst) at (Light_1.south west) % oben
+
+	;
+	% Light_2
+	\node (Light_2) [component_small, above right, xshift=1cm] at (FPGA.south east) {}
+		% Caption
+		node [caption] at (Light_2.south west) { \small{\textsf{\textbf{Light\textsubscript{2}}}} }
+		% In/outputs rechts
+		coordinate [yshift=0.666cm, label={ right:\footnotesize{\texttt{tx}} }]   (Light_2_tx)   at (Light_2.south west) % unten
+		coordinate [yshift=1.333cm, label={ right:\footnotesize{\texttt{rx}} }]   (Light_2_rx)   at (Light_2.south west) % mitte
+	;
+
+	% FPGA -> Lights
+	\draw[conn] (FPGA_restart) -- (Light_1_rst);
+	\draw[conn] (FPGA_tx1) -- (Light_1_rx);
+	\draw[conn] (Light_1_tx) -- (FPGA_rx1) ;
+	\draw[conn] (FPGA_tx2) -- (Light_2_rx);
+	\draw[conn] (Light_2_tx) -- (FPGA_rx2);
+
 	% FPGA -> Computer
-	\draw[conn]  (lock_tx) -- (FPGA_rx1) ;
-	\draw[conn]  (FPGA_rx1) -- (FPGA_tx0);
-	\draw[conn]  (FPGA_tx0) -- (computer_rx);
+	\draw[conn]  (FPGA_tx0) -- (Computer_rx);
+	\draw[conn] (Computer_tx) -- (FPGA_rx0);
+	
 	% FPGA internal
-	\draw[conn] (FPGA_rx0) +(0.2,0)|- (din);
-	\draw[conn, thick] (data_out) +(0, -0.15) -- (data_out_end);
+	\draw[conn] (FPGA_rx0) -- ([xshift=0.85cm] FPGA_rx0) |- (FPGA_tx0); % Computer input feedback loop
+	\draw[conn] (Logic.east) |- (FPGA_restart); %logic -> restart
+	
+		% Connections from/to Receiver
+ 	\draw[conn] (FPGA_rx0) -- ([xshift=0.2cm] FPGA_rx0)  |- (Receiver_din); % tx0 -> receiver
+	\draw[conn, very thick] (Receiver_data_out) -| ([xshift=0.05cm] Logic.south);  % receiver -> logic
+	\draw[conn] (Receiver_valid) -|  ([xshift=0.225cm] Logic.south); % receiver -> logic
+
+		% Connections from/to Mux1
+	\draw[conn] ([xshift=0.5cm] Logic.south) |- (Mux1.west);
+	\draw[conn, draw=red] (UART_idle) -| (Mux1); % UART_idle -> Mux1	
+	\draw[conn, color=green] (Transmitter_dout) -- ([yshift=0.2cm] Transmitter_dout) -| ([xshift=-0.2cm] Mux1.south); % dout -> Mux1
+	\draw[conn, color=blue] (FPGA_rx2) -| ([xshift=0.2cm] Mux1.south); % rx2 -> Mux1
+	\draw[conn, yshift=0.5cm] ([yshift=0.05cm] Mux1.east) -- (FPGA_tx1); % Mux1 -> tx1
+
+		% Connections from/to Mux2
+	\draw[conn] ([xshift=0.5cm] Logic.south) -- ([shift={(0.5cm, -0.9cm)}] Logic.south) -| ([xshift=-0.35cm] Mux2.west) -- (Mux2.west); % TODO
+	\draw[conn, draw=red] (UART_idle) -| (Mux2); % UART_idle -> Mux2
+	\draw[conn, draw=green] ([yshift=0.2cm] Transmitter_dout) -| ([xshift=-0.2cm] Mux2.north); % dout -> Mux2
+	\draw[conn, draw=blue] (FPGA_rx1) -| ([xshift=0.2cm] Mux2.north);	 % rx1 -> Mux2
+	\draw[conn] (Mux2) |- (FPGA_tx2); % Mux2 -> tx2
 
 \end{tikzpicture}
