@@ -8,10 +8,13 @@
 		rectangle, draw=black, thick
 	}}	
 	\tikzset{component/.style={
-		comp, minimum width=6cm, minimum height=5cm, very thick
+		comp, minimum width=6cm, minimum height=6cm, very thick
 	}}
 	\tikzset{component_small/.style={
 		comp, minimum width=2cm, minimum height=2cm, thick
+	}}
+	\tikzset{component_tiny/.style={
+		comp, inner sep=0.1cm, semithick, right
 	}}
 	\tikzset{caption/.style={
 		below right
@@ -26,18 +29,21 @@
 		node [caption] at (FPGA.south west) { \small{\textsf{\textbf{FPGA}}} }
 		
 		% In/-outputs links
-		coordinate [yshift=3cm+0.4pt+0.666cm, label={ above right : \footnotesize{} }]                           (FPGA_rx0) at (FPGA.south west) % unten
-		coordinate [yshift=3cm+0.4pt+1.333cm, label={ above right : \footnotesize{$\texttt{tx}_0$} }] (FPGA_tx0) at (FPGA.south west) % oben
+		coordinate [yshift=4cm+0.4pt+0.666cm, label={ above right : \footnotesize{$\texttt{rx}_0$} }] (FPGA_rx0) at (FPGA.south west) % unten
+		coordinate [yshift=4cm+0.4pt+1.333cm, label={ above right : \footnotesize{$\texttt{tx}_0$} }] (FPGA_tx0) at (FPGA.south west) % oben
 
 		% In/outputs  rechts
-		coordinate [yshift=3cm+0.4pt,                    label={ above left : \footnotesize{$\texttt{rx}_1$} }]      (FPGA_rx1)       at (FPGA.south east)  % unten
-		coordinate [yshift=3cm+0.4pt+0.666cm, label={ above left : \footnotesize{$\texttt{tx}_1$} }]      (FPGA_tx1)       at (FPGA.south east) % mitte
-		coordinate [yshift=3cm+0.4pt+1.333cm, label={ above left : \footnotesize{$\texttt{restart}$} }] (FPGA_restart) at (FPGA.south east) % oben
+		coordinate [yshift=4cm+0.4pt,                    label={ above left : \footnotesize{$\texttt{rx}_1$} }]      (FPGA_rx1)       at (FPGA.south east)  % unten
+		coordinate [yshift=4cm+0.4pt+0.666cm, label={ above left : \footnotesize{$\texttt{tx}_1$} }]      (FPGA_tx1)       at (FPGA.south east) % mitte
+		coordinate [yshift=4cm+0.4pt+1.333cm, label={ above left : \footnotesize{$\texttt{restart}$} }] (FPGA_restart) at (FPGA.south east) % oben
+		
+		% Internals
+		node (Mux)          [component_tiny, shift={(0.25cm,-1.8cm) }]  at (FPGA.north west)   { \scriptsize{\textsf{\texttt{Mux}}} }
 	;
 
 	% Logic
-	\node (Logic) at (FPGA.north) [comp, minimum height=1cm, minimum width=2cm, below, shift={(-0.45cm, -0.25cm)}] {}
-		node [caption] at (Logic.south west) { \textsf{\footnotesize{\textbf{Logic}}} }
+	\node (Logic) at (FPGA.north) [comp, minimum height=1cm, minimum width=1.5cm, below right, shift={(0.6cm, -0.75cm)}] {}
+		node [above right] at (Logic.south west) { \textsf{\footnotesize{\textbf{Logic}}} }
 	;
 
 	% Receiver
@@ -54,8 +60,22 @@
 		coordinate [yshift=1.333cm-0.15cm,  label={ right : \scriptsize{$[7:0]$} }]                     (Receiver_data_out2) at (Receiver.south west) % mitte
 	;
 
+	% Receiver2
+	\node (Receiver2) at (FPGA.south west) [component_small, above right, shift={(0.5, 0.75)}] {}
+		% Caption
+		node [caption] at (Receiver2.south west) { \textsf{\footnotesize{\textbf{UART Recv.}}} }
+
+		% Input rechts
+		coordinate [yshift=1cm, label={ right : \scriptsize{\texttt{din}} }] (Receiver2_din) at (Receiver2.south west)
+
+		% Outpus links
+		coordinate [yshift=0.666cm,                 label={ left : \scriptsize{\texttt{valid}} }]           (Receiver2_valid)           at (Receiver2.south east) % unten
+		coordinate [yshift=1.333cm+0.15cm, label={ left : \scriptsize{\texttt{data\_out}} }] (Receiver2_data_out)    at (Receiver2.south east) % oben
+		coordinate [yshift=1.333cm-0.15cm,  label={ left : \scriptsize{$[7:0]$} }]                     (Receiver2_data_out2) at (Receiver2.south east) % mitte
+	;
+
 	% Transmitter
-	\node (Transmitter) at (FPGA.south west) [component_small, above right, shift={(0.5, 0.75)}] {}
+	\node (Transmitter) at (FPGA.north west) [component_small, below right, shift={(1.35, -0.25)}] {}
 		node [caption] at (Transmitter.south west) { \textsf{\footnotesize{\textbf{UART Trans.}}} }
 
 		% Output links
@@ -98,19 +118,28 @@
 	\draw[conn] (Lock_tx) -- (FPGA_rx1) ;
 	
 	% FPGA internal
-		\draw[conn] ([yshift=0.583cm] Logic.south east) -- (FPGA_restart);
+		\draw[conn] (Logic.east) -| ([shift={(0.15cm, 0.566cm)}] Logic.east) -- (FPGA_restart);
+		\draw[conn, name path=FPGA_rx0--FPGA_tx1] (FPGA_rx0) -| ([shift={(0.2cm, -1.375cm)}] FPGA_rx0) -- ([shift={(5.3cm, -1.375cm)}] FPGA_rx0) |- (FPGA_tx1);
+		\draw[conn, name path=FPGA_rx1--Mux]  (FPGA_rx1) -- ([xshift=-0.5cm] FPGA_rx1) |-  ([shift={(-0.2cm, -1.55cm)}]  Transmitter_dout) -| ([xshift=-0.1cm] Mux.south);
+		\draw[conn] ([xshift=-0.1cm] Mux.north east) |- (FPGA_tx0);
+		\draw[conn] ([xshift=-0.5cm] Logic.south) |- ([shift={(0.355cm, -0.55cm)}] Mux.east) |- (Mux.east);
 	
 		% Connections to/from Receiver
-		\draw[conn] (FPGA_rx1) -- ([xshift=-0.2cm] FPGA_rx1) |- (Receiver_din);
-		\draw[conn, very thick] (Receiver_data_out) -| ([xshift=0.75cm] Logic.south); 
-		\draw[conn] (Receiver_valid) -| ([xshift=0.55cm] Logic.south);
+		\draw[conn, name path=FPGA_rx1--Receiver_din] (FPGA_rx1) -- ([xshift=-0.2cm] FPGA_rx1) |- (Receiver_din);
+		\draw[conn, very thick] (Receiver_data_out) -|  ([shift={(-0.2cm,0.6cm)}] Receiver_data_out) -| ([xshift=0.3cm] Logic.south); 
+		\draw[conn] (Receiver_valid) -| ([shift={(-0.4cm, 1.5cm)}] Receiver_valid) -| ([xshift=0.1cm] Logic.south);
 		
-		% Connections to/from Transmitter
-		\draw[conn, very thick] ([xshift=0.25cm]Logic.south) |- (Transmitter_data_in);
-		\draw[conn] ([xshift=0.4cm] Logic.south) |- (Transmitter_enable);
-		\draw[conn, name path=Transmitter_dout--FPGA_tx0] (Transmitter_dout) -- ([xshift=-0.2cm] Transmitter_dout) |- (FPGA_tx0);
-		\draw[conn, name path=Transmitter_dout--FPGA_tx1] ([shift={(-0.2cm, 1.2cm)}] Transmitter_dout) -- ([shift={(4cm, 1.2cm)}] Transmitter_dout) |- (FPGA_tx1);
+		% Connections to/from Receiver2
+		\draw[conn, name path=FPGA_rx0--Receiver2_din] (FPGA_rx0) -- ([xshift=0.2cm] FPGA_rx0) |- (Receiver2_din);
+		\draw[conn, very thick] (Receiver2_data_out) -| ([shift={(0.2cm,0.9cm)}] Receiver2_data_out) -| ([xshift=-0.3cm] Logic.south); 
+		\draw[conn] (Receiver2_valid) -| ([shift={(0.4cm, 1.6cm)}] Receiver2_valid) -| ([xshift=-0.1cm] Logic.south);
 
-		% Intersection
-		\fill[name intersections={of=Transmitter_dout--FPGA_tx0 and Transmitter_dout--FPGA_tx1, total=\t}] (intersection-\t) circle (0.4mm);
+		% Connections to/from Transmitter
+		\draw[conn, very thick] ([yshift=-0.192cm] Logic.north west) -- ([yshift=-0.15cm] Transmitter_data_in);
+		\draw[conn] ([yshift=0.166cm] Logic.south west) -- (Transmitter_enable);
+		\draw[conn] (Transmitter_dout) -| ([shift={(-0.15cm, -1.3cm)}] Transmitter_dout) -| ([xshift=0.1cm] Mux.south);
+
+		% Intersections
+		\fill[name intersections={of=FPGA_rx0--FPGA_tx1 and FPGA_rx0--Receiver2_din, total=\t}] (intersection-\t) circle (0.4mm);
+		\fill[name intersections={of=FPGA_rx1--Mux and FPGA_rx1--Receiver_din, total=\t}] (intersection-\t) circle (0.4mm);
 \end{tikzpicture}
