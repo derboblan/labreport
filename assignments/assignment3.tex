@@ -1,12 +1,22 @@
 \section*{Assignment 3}
-The traffic lights hack.
+Two identically programmed micro controllers equiped with three LEDs and communicating via UART are handed to us. [What do we see observing them?] -- they resemble two simple traffic lights. In a first step we are asked to reverse engineer the underlying protocol. To do so, we hook an oscilloscope to the \texttt{rx} and \texttt{tx} lines of one device and observe its behaviour during and after a reset. We see the red light active and one single ASCII byte $47_{16}$, `G', being transmitted. [Conjecture how protocol works: It seems as if ...]. We test our hypothesis by connecting one micro controller directly to the computer: Whenever we send the letter `G' it instantly illuminates the green light and after some time turns to yellow then red staying like this if we do not interact further.
 
-See figure \ref{as3-schematic} (p.~\pageref{as3-schematic}).
+Now we are ready for the real assignment: launch a man-in-the-middle attack against the traffic lights protocol, implementing the three following modes of operation.
+\begin{itemize}
+    \item[] \textsf{Throughput}\footnote{Actually pass through}: the FPGA passively relays the communication between the lights like a cable (the default setting);
+    \item[] \textsf{Green}: denial of service by setting both lights to \textcolor{green}{green};
+    \item[] \textsf{Red}: denial of service by setting both lights to \textcolor{red}{red}. Leads to starvation because `G' is only sent once when activating the red light.
+\end{itemize}
 
-\begin{figure}[htb]
+As a side requirement we want to be able to cycle through the modes seamlessly, i.~e., no matter which mode $M$ the FPGA is in, we can always choose the next operation $M'$ freely.
+
+See figure \ref{fig:as3-schematic} (p.~\pageref{fig:as3-schematic}).
+
+\begin{figure}[tb]
     \begin{center}
         \input{assignments/images/assignment3-schematic.tikz}
-        \caption{FPGA in the middle with three modes of operation \textsf{Throughput} (blue), \textsf{Green} (green) and \textsf{Red} (red) controlled via the computer. The transmitter is always enabled and has a fixed input byte producing a cyclic bitstream \texttt{dout}. Output and hence operation mode are selected by multiplexer.}
-        \label{as3-schematic}
+        \caption{FPGA in the middle with three modes of operation \textsf{Throughput} (\textcolor{blue}{blue}), \textsf{Green} (\textcolor{green}{green}) and \textsf{Red} (\textcolor{red}{red}) controlled via the computer. The transmitter is always enabled and has a fixed input byte producing a cyclic bitstream \texttt{dout}. Outputs and hence operation mode are selected by multiplexers.}
+        \label{fig:as3-schematic}
+        \vspace{1em}\hrule
     \end{center}
 \end{figure}
