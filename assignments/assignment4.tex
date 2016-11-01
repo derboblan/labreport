@@ -3,27 +3,36 @@
 % resetting fpga, tou cut the time when fpga was responding wrong PW
 % the rest was implemented via python, and tee Fpga worked as Translator
 
-The task was to bruteforce a 4 digit pin.
+% \emph{Aufgabe: }We had an FPGA configured by the tutors. We should enter it, without any Knowledge what it does.
 
-\emph{Aufgabe: }We had an FPGA configured by the tutors. We should enter it, without any Knowledge what it does.
+This time, we only get one pre programmed micro controller with a single UART communication interface. 
+To figure out the functionality of the device and how we can possibly attack it, we connect it to the computer and perform a black box analysis.
+After powering up, the device expects four input bytes via UART, answers \textit{``Incorrect PIN"} and imposes a 10 second penalty upon the input of the next four bytes. Now the task at hand is clear -- we have to obtain the correct PIN.
+
+We begin by wiring the FPGA between computer and microcontroller, letting it relay the communication passively, like in assignment 3.
+To get past the penalties, we add a receiver to the design, locate the microcontroller's \texttt{rst} pin and connect it to the FPGA, so it can be triggered whenever the computer transmits a special command byte, thus making brute force approaches feasible.
+
+From this point on, we pursue two different paths to solve the problem.
 
 \subsubsection*{An easy solution}
 See figure \ref{fig:as4-schematic-1} (p.~\pageref{fig:as4-schematic-1}).
 
 Bruteforcing the PIN this way took about 30 seconds.
 
-\begin{figure}[tb]
-    \begin{center}
-        \input{assignments/images/assignment4-schematic-v1.tikz}
-        \caption{In this setup, all possible PINs are computed on the computer and transmitted to the device. The FPGA just relays the communication and understands the computers' output bitstream to reset the mircrocontroller upon receiving a special command.}
-        \label{fig:as4-schematic-1}
-        \vspace{1em}\hrule
-    \end{center}
-\end{figure}
+
 
 \emph{Bearbeitung und Lösung: }Wenn die Von den Tutoren Programmierte FPGA (FPGA-PIN) über den Throughput an den Computer anschloss und die resettaste des FPGA-PIN betätigte, Würde man auf dem Cmputerbildschirm zur eingabe eines PINs aufgefordert. Nach der eingabe von Vier Ziffern zeigte der Computer an das der Pin falsch sei \emph{"Incorrect Pin"}. erst nache inigen Sekunden war es wieder möglich erneut einen Pin einzugeben. 
 Der Lösungsansatz war trozdem eine Implementierung eines Brutforce algotythmus. Um die Wartezeit nach einer Falscheingabe zu umgehen, wurde jedoch der Reset Pin des FPGA-Pin angeprochen um die FPGA zu resetten und so sofort einen neuen Pin eingeben zu können. 
 Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
+
+\begin{figure}[tb]
+    \begin{center}
+        \input{assignments/images/assignment4-schematic-v1.tikz}
+        \caption{In this setup, all possible PINs are computed on the computer and transmitted to the device. The FPGA just relays the communication and understands the computer's output bitstream to reset the mircrocontroller upon receiving a special command.}
+        \label{fig:as4-schematic-1}
+        \vspace{1em}\hrule
+    \end{center}
+\end{figure}
 
 \subsubsection*{The fast way}
 See figure \ref{fig:as4-schematic-2} (p.~\pageref{fig:as4-schematic-2}).
