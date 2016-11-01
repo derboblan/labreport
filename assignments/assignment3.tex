@@ -1,15 +1,33 @@
 \section*{Assignment 3}
-Two identically programmed micro controllers equipped with three different-colored LEDs (red, yellow and green) and communicating via UART are handed to us. In operation only one of the lights is active at a time per device. While one LED is red, the other one is green. After some time the green light turns to yellow and then to red, causing the first device to activate the green light -- they resemble two simple traffic lights. In a first step we are asked to reverse engineer the underlying protocol. To do so, we hook an oscilloscope to the \texttt{rx} and \texttt{tx} lines of one device and observe its behavior during and after a reset. We see the red light active and one single ASCII byte $47_{16}$, `G', being transmitted. [We conjecture . Whenever one micro controller finishes transitioning from showing the green light to showing the red light, it sends out `G' to signal the connected device that it is safe to turn to green.]. We test our hypothesis by connecting one micro controller directly to the computer: Whenever we send the letter `G' it instantly illuminates the green light and after some time turns to yellow then red staying like this if we do not interact further.
+% Ampel
+% 3 FPGA's 2 with ampel the other as Translator 
+% at 1st only the 2 ampels, watching with oszyluscope how they communicate.
+% at 2nd communicating with on ampel though the fpga transmitting asci keys to imitate the 2nd ampel
+% 3rd Man in the middle
+
+% 3modes both green
+% both red
+% normal working
+
+Two identically programmed micro controllers equipped with three different-colored LEDs (red, yellow and green) and communicating via UART are handed to us. In operation only one of the lights is active at a time per device. While one LED is red, the other one is green. After some time the green light turns to yellow and then to red, causing the first device to activate the green light -- they resemble two simple traffic lights. In a first step we are asked to reverse engineer the underlying protocol. To do so, we hook an oscilloscope to the \texttt{rx} and \texttt{tx} lines of one device and observe its behavior during and after a reset. We see the red light active and one single ASCII byte $47_{16}$, `G', being transmitted. We conjecture that  whenever one micro controller finishes transitioning from showing the green light to showing the red light, it sends out `G' to signal the connected device that it is safe to turn to green. We test our hypothesis by connecting one micro controller directly to the computer and in case that we send the letter `G', it instantly illuminates the green light and transitions to showing the red light soon after, staying like this if we do not interact further.
 
 Now we are ready for the real assignment: launch a man-in-the-middle attack against the traffic lights protocol, implementing the three following modes of operation.
 
 \begin{itemize}
-    \item[] \textsf{Throughput}\footnote{Actually the correct term would be `pass through', but since we used the wrong one throughout the lab days, we are going to stick with throughput.}: the FPGA passively relays the communication between the lights like a cable (the default setting);
-    \item[] \textsf{Green}: we manipulate the communication in a way that both lights constantly show the green light;
-    \item[] \textsf{Red}: denial of service by setting both lights to \textcolor{red}{red} by cutting the communication link between the devices. Leads to starvation because `G' is only sent once when activating the red light.
+    \item[] \textsf{Throughput}\footnote{Actually the correct term would be `pass through', but since we used the wrong one throughout the lab days, we are going to stick to `throughput'.}: the FPGA passively relays the communication between the devices like a cable (the default setting);
+    \item[] \textsf{Green}: we manipulate the communication in a way that both micro controllers constantly show the green light;
+    \item[] \textsf{Red}: by cutting the communication links to the devices, we can make both display the red light (this can lead to starvation because `G' is only sent once when activating the red light).
 \end{itemize}
 
 As a side requirement we want to be able to cycle through the modes seamlessly, i.~e., no matter which mode $M$ the FPGA is in, we can always choose the next operation $M'$ freely.
+
+We start \textsf{Throughput} by connecting the \texttt{tx} line of one device to the \texttt{rx} line of the other and vice versa, passing the signals directly through the FPGA. 
+Next, we add a receiver to get commands from the computer and use a simple feedback loop to report them back. 
+To implement \textsf{Green}, we have to send `G' continuously to both devices, therefore we include a transmitter with constant input byte `G', which is always enabled.
+Finally, \textsf{Red} just outputs the static UART idle bit, $1_2$, to the micro controllers. 
+Multiplexers are used to select the correct output signals corresponding to each mode 
+
+To tackle the starvation problem when switching the mode from \textsf{Red} to \textsf{Throughput}, we need a simple finite state machine that triggers the reset signal of one device, if this transition occurs.
 
 See figure \ref{fig:as3-schematic} (p.~\pageref{fig:as3-schematic}).
 
