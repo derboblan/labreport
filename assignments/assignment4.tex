@@ -6,24 +6,16 @@
 % \emph{Aufgabe: }We had an FPGA configured by the tutors. We should enter it, without any Knowledge what it does.
 
 This time, we only get one pre programmed micro controller with a single UART communication interface. 
-To figure out the functionality of the device and how we can possibly attack it, we connect it to the computer and perform a black box analysis.
+To figure out the functionality of the device and how we could possibly attack it, we connect it to the computer and perform a black box analysis.
 After powering up, the device expects four input bytes via UART, answers \textit{``Incorrect PIN"} and imposes a 10 second penalty upon the input of the next four bytes. Now the task at hand is clear -- we have to obtain the correct PIN.
 
-We begin by wiring the FPGA between computer and microcontroller, letting it relay the communication passively, like in assignment 3.
-To get past the penalties, we add a receiver to the design, locate the microcontroller's \texttt{rst} pin and connect it to the FPGA, so it can be triggered whenever the computer transmits a special command byte, thus making brute force approaches feasible.
+We begin by wiring the FPGA between computer and micro controller, letting it relay the communication passively, like in assignment 3.
+To get past the penalties, we add a receiver to the design, locate the micro controller's \texttt{rst} pin and connect it to the FPGA, so it can be triggered whenever the computer transmits a special command byte, thus making brute force approaches feasible.
 
-From this point on, we pursue two different paths to solve the problem.
+From this point on, we pursue two different paths to solve the task.
 
 \subsubsection*{An easy solution}
-See figure \ref{fig:as4-schematic-1} (p.~\pageref{fig:as4-schematic-1}).
-
-Bruteforcing the PIN this way took about 30 seconds.
-
-
-
-\emph{Bearbeitung und Lösung: }Wenn die Von den Tutoren Programmierte FPGA (FPGA-PIN) über den Throughput an den Computer anschloss und die resettaste des FPGA-PIN betätigte, Würde man auf dem Cmputerbildschirm zur eingabe eines PINs aufgefordert. Nach der eingabe von Vier Ziffern zeigte der Computer an das der Pin falsch sei \emph{"Incorrect Pin"}. erst nache inigen Sekunden war es wieder möglich erneut einen Pin einzugeben. 
-Der Lösungsansatz war trozdem eine Implementierung eines Brutforce algotythmus. Um die Wartezeit nach einer Falscheingabe zu umgehen, wurde jedoch der Reset Pin des FPGA-Pin angeprochen um die FPGA zu resetten und so sofort einen neuen Pin eingeben zu können. 
-Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
+Following the first one, the FPGA does not need any further programming (see figure \ref{fig:as4-schematic-1}, p.~\pageref{fig:as4-schematic-1}, for a schematic of the setup). Instead, we run a script in the high-level language Python on the computer. It takes about 30 seconds to obtain the correct PIN by iterating over all possibilities \texttt{0000}--\texttt{9999} and telling the FPGA to reset the device, if it is wrong.
 
 \begin{figure}[tb]
     \begin{center}
@@ -39,10 +31,15 @@ See figure \ref{fig:as4-schematic-2} (p.~\pageref{fig:as4-schematic-2}).
 
 Compared to the first approach, this solution is magnitues faster requiring only about 3 seconds to obtain the PIN.
 
+\emph{Bearbeitung und Lösung: }
+Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
+
+
+
 \begin{figure}[tb]
     \begin{center}
         \input{assignments/images/assignment4-schematic-v2.tikz}
-        \caption{Now the FPGA calculates the 4 digit numbers, sends them to the device and decodes the answer bitstream in order to reset the microcontroller. The computer is passive in this configuration and only needed as output device, so we safely ignore its transmissions.}
+        \caption{Now the FPGA calculates the 4 digit numbers, sends them to the device and decodes the answer bitstream in order to reset the microcontroller. The computer is passive in this configuration and only needed as an output device, thus we ignore its transmissions.}
         \label{fig:as4-schematic-2}
         \vspace{1em}\hrule
     \end{center}
