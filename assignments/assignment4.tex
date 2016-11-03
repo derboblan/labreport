@@ -35,7 +35,7 @@ In order to do so, we begin with rewiring the receiver to listen to the micro co
 Next, we program the FPGA to reset the device on its own, whenever it receives the ASCIIbyte $49_{16}$, `I', as in \textit{``Incorrect PIN"}, first. 
 To be able to send PINs, we add a transmitter, which output is connected to both, the computer's and the micro controller's, \texttt{rx} lines. 
 See figure \ref{fig:as4-schematic-2} (p.~\pageref{fig:as4-schematic-2}) for a schematic of the arrangement at this point.
-Now, we only have to port the brute force algorithm , i.~e., generation and transmission of all possible PINs, to run in the logic on the FPGA. We achieve this with the following finite 4-state machine.
+Now, we only have to port the brute force algorithm, i.~e., generation and transmission of all possible PINs, to run in the logic on the FPGA. We achieve this with the following finite 4-state machine.
 
 \begin{itemize}
     \item[] \begin{labeling}{\textsc{Receive}:}
