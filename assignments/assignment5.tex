@@ -8,9 +8,11 @@
 % python did the rest.
 
 Like in assignment 4, we get a microcontroller (we know, that its sowftware is written using the c programming language) and analyse it the same way as before. 
-This time it directly prompts \textit{``Please enter password:''} and the goal is set. As possible attack vector comes a timing vulnerability to mind, if the password comparison is implemented using \texttt{strcmp}. We continue setting up the FPGA like before -- able to reset the device on command and relaying all communication. We just need a little further testing to be sure, that we are indeed going to program a timing attack.
+This time it directly prompts \textit{``Please enter password:''} and the goal is set. As a possible attack vector comes a timing vulnerability to mind, if the password comparison is implemented using \texttt{strcmp}. We continue setting up the FPGA like before -- able to reset the device on command and relaying all communication. We just need a little further testing to be sure, that we are indeed going to program a timing attack.
 
-Bruteforce attack against password string. 
+[What is the idea? Which time are we stopping sequence `:' --. When can we start sending our password -> after the micro controller has sent the Please enter password:-string and is in internal state to accept input. We measure the timing witch an oscilloscope hooked to the device's communication pins.]
+
+Remember, at this point the FPGA is already set up link in figure \ref{fig:as4-schematic-1} (p.~\pageref{fig:as4-schematic-1}).
 
 See figure \ref{fig:as5-schematic} (p.~\pageref{fig:as5-schematic}).
 
