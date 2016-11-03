@@ -9,44 +9,44 @@ This time, we only get one pre programmed micro controller with a single UART co
 To figure out the functionality of the device and how we could possibly attack it, we connect it to the computer and perform a black box analysis.
 After powering up, the device expects four input bytes via UART, answers \textit{``Incorrect PIN"} and imposes a 10 second penalty upon the input of the next four bytes. Now the task at hand is clear -- we have to obtain the correct PIN.
 
-We begin by wiring the FPGA between computer and micro controller, letting it relay the communication passively, like in assignment 3.
-To get past the penalties, we add a receiver to the design, locate the micro controller's \texttt{rst} pin and connect it to the FPGA, so it can be triggered whenever the computer transmits a special command byte, thus making brute force approaches feasible.
+We begin by setting the FPGA up in between computer and micro controller, letting it relay the communication passively, like in assignment 3.
+To get past the timing penalties, we add a receiver to the design, locate the micro controller's \texttt{rst} pin and connect it to the FPGA, so that it can be triggered whenever the computer transmits a special command byte, thus making brute force approaches feasible.
 
 From this point on, we pursue two different paths to solve the task.
 
-\begin{figure}[b!]
+\subsubsection*{An easy solution}
+Following the first direction, the FPGA does not need any further programming, see figure \ref{fig:as4-schematic-1} (p.~\pageref{fig:as4-schematic-1}) for a schematic of the final setup. Instead, we just write and execute a script in the high-level language Python on the computer. It takes about 30 seconds to obtain the correct PIN by iterating over all possibilities, 0000--9999, and telling the FPGA to reset the device, if the given PIN is wrong.
+
+\begin{figure}[htb]
     \begin{center}
-        \hrule\vspace{1em}
         \input{assignments/images/assignment4-schematic-v1.tikz}
         \caption{In this setup, all possible PINs are computed on the computer and transmitted to the device. The FPGA just relays the communication and understands the computer's output bitstream to reset the mircrocontroller upon receiving a special command.}
         \label{fig:as4-schematic-1}
+        \vspace{1em}\hrule
     \end{center}
 \end{figure}
 
-\subsubsection*{An easy solution}
-Following the first one, the FPGA does not need any further programming (see figure \ref{fig:as4-schematic-1}, p.~\pageref{fig:as4-schematic-1}, for a schematic of the setup). Instead, we run a script in the high-level language Python on the computer. It takes about 30 seconds to obtain the correct PIN by iterating over all possibilities \texttt{0000}--\texttt{9999} and telling the FPGA to reset the device, if it is wrong.
 
 \subsubsection*{The fast way}
-The second method [shifts to the FPGA]. 
-We rewire the receiver to listen to the device's output.
-Now the FPGA resets the microcontroller on its own, whenever it receives the byte $49_{16}$, `I'. 
-To be able to send PINs, we add a transmitter (the output is connected to both, the computer's and the device's, \texttt{rx} lines). Now we only have to port the brute force algorithm to Verilog to run on the FPGA. We achieve this with the following finite 4-state machine.
+From a hardware engineering perspective, this first method is rather boring. We (probably) did not even use a tiny part of the FPGA's ressources. 
+But we can change this and harness its full potential: by moving all workload to the FPGA, effectively reducing the computer to a mere replaceable output device. 
+
+In order to do so, we begin with rewiring the receiver to listen to the micro controller's output.
+Next, we program the FPGA to reset the device on its own, whenever it receives the ASCIIbyte $49_{16}$, `I', as in \textit{``Incorrect PIN"}, first. 
+To be able to send PINs, we add a transmitter, which output is connected to both, the computer's and the micro controller's, \texttt{rx} lines. 
+See figure \ref{fig:as4-schematic-2} (p.~\pageref{fig:as4-schematic-2}) for a schematic of the arrangement at this point.
+Now, we only have to port the brute force algorithm , i.~e., generation and transmission of all possible PINs, to run in the logic on the FPGA. We achieve this with the following finite 4-state machine.
 
 \begin{itemize}
-    \item[]\textsc{Start}: Initialise the PIN to $0000$; every digit it treated as its own byte.
-    \item[]\textsc{Send}: Transmit the most significant byte of the PIN and shift it one byte to the left; this is repeated four times to transmit every digit.
-    \item[]\textsc{Inc}: Increment the most significant byte of the PIN by one, passing possible carryovers to the next bytes.
-    \item[]\textsc{Receive}: If the device's answer starts with `I', reset it an go to \textsc{Send}; otherwise do nothing.
+    \item[] \begin{labeling}{\textsc{Receive}:}
+        \item[\textsc{Start}:] Initialise the PIN to 0000, treating every digit as its own byte in a four byte array;\\go to \textsc{Send}.
+        \item[\textsc{Send}:] Transmit the most significant byte of the PIN and rotate it one byte to the left (this is repeated four times to transmit every digit);\\go to \textsc{Inc}.
+        \item[\textsc{Inc}:] Increment the most significant byte of the PIN by one, passing possible carryovers to the next bytes;\\go to \textsc{Receive}.
+        \item[\textsc{Receive}:] If the device's answer does not start with `I', do nothing, otherwise reset the micro controller and go to \textsc{Send}.
+    \end{labeling}
 \end{itemize}
 
-See figure \ref{fig:as4-schematic-2} (p.~\pageref{fig:as4-schematic-2}).
-
-Compared to the first approach, this solution is magnitues faster requiring only about 3 seconds to obtain the PIN.
-
-\emph{Bearbeitung und Lösung: }
-Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
-
-
+Since transmission of the generated PINs reaches both, micro controller and computer, we just have to start a program that can read serial input from a USB port, like \texttt{screen}, before starting the attack and the last four digits of the printed output are the correct PIN. Obtaining it takes only about 3 seconds and thus, compared to the first approach, this one is magnitudes faster.
 
 \begin{figure}[tb]
     \begin{center}
@@ -58,17 +58,17 @@ Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State 
 \end{figure}
 
 
-\begin{itemize}
 
 
-\item[START] Ist der erste Zustand der STate mashine, in dem die 4 stellen des Pins sowie einem 5. Übertragszahl auf 0 gesetzt. diese 5 Ziffern werden als 8-Bit gehandhabt. Außerdem werden andere Register initialisiert.
+%\emph{Bearbeitung und Lösung: }
+%Um den Brutforce algorythmus auf dem FPGA zu realisieren, Bauten wir eine State Mashine mit 4 Zuständen, einem UART-Transmitter und einem UART-Reciver.
 
-\item[SEND] In diesem Zustand das erste Byte des 4 Stelligen Pins an den UART-Tranmitter übergeben, welcher es direkt an die FPGA-Pin weiterleitet. nun werden alle stellen des Pins um eine stelle verrückt, wobei die vorher erste stelle auf die Hilfvariable übertragen wird. Nun wird der Vorgang wiederholt und die neue erste Stelle des Pins via Transmitter übermittelt. Dieser vorgang findet statt, bis alle zeichen wieder an ihrem orginalen ort sind. 
+%\begin{itemize}
+    %\item[START] Ist der erste Zustand der STate mashine, in dem die 4 stellen des Pins sowie einem 5. Übertragszahl auf 0 gesetzt. diese 5 Ziffern werden als 8-Bit gehandhabt. Außerdem werden andere Register initialisiert.
 
-\item[INC] Hier wird Die nidrigste Stelle des Pins um 1 erhöht. ist diese Stelle bereits 9 muss der übertrag berücksichtigt werden. Außerdem wird der Aktuelle Pin an den Computer Übergeben, um den Vortgang verfolgen zu können.
+    %\item[SEND] In diesem Zustand das erste Byte des 4 Stelligen Pins an den UART-Tranmitter übergeben, welcher es direkt an die FPGA-Pin weiterleitet. nun werden alle stellen des Pins um eine stelle verrückt, wobei die vorher erste stelle auf die Hilfvariable übertragen wird. Nun wird der Vorgang wiederholt und die neue erste Stelle des Pins via Transmitter übermittelt. Dieser vorgang findet statt, bis alle zeichen wieder an ihrem orginalen ort sind. 
 
-\item[RECIVE] in diesem Zustand wird auf die Antwort des FPGA-Pin gewartet. Beginnt die Antwort mit einem "I" wie bei Incorrect Pin, wird die Resetfunktion des FPGA-Pin betätigt und die Statmashine begibt sich wieder in den SEND zustand und setzt die Bruteforce Attacke fort.
+    %\item[INC] Hier wird Die nidrigste Stelle des Pins um 1 erhöht. ist diese Stelle bereits 9 muss der übertrag berücksichtigt werden. Außerdem wird der Aktuelle Pin an den Computer Übergeben, um den Vortgang verfolgen zu können.
 
-\end{itemize}
-
-
+    %\item[RECIVE] in diesem Zustand wird auf die Antwort des FPGA-Pin gewartet. Beginnt die Antwort mit einem "I" wie bei Incorrect Pin, wird die Resetfunktion des FPGA-Pin betätigt und die Statmashine begibt sich wieder in den SEND zustand und setzt die Bruteforce Attacke fort.
+%\end{itemize}
