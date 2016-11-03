@@ -51,4 +51,4 @@ Multiplexers are used to select the correct output signals corresponding to each
     \end{center}
 \end{figure}
 
-To tackle the starvation problem, we need a simple finite state machine that knows the current and next operation modes, triggering the reset signal of one device, if the FPGA switches from \textsf{Red} to \textsf{Throughput}.
+To tackle the starvation problem, we need a simple finite state machine that knows the current and next operation modes, triggering the reset signal of one device, if the FPGA is about to switch from \textsf{Red} to \textsf{Throughput}. We use a voltmeter to find the \texttt{rst} pin on the micro controller, by effectively short-circuiting all unconnected pins [?].
