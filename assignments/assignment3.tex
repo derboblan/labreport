@@ -30,7 +30,7 @@ Now we are ready for the real assignment: To launch a man-in-the-middle attack a
         \item[\textsf{Green}:] manipulate the communication in a way that both micro controllers constantly show the green light;
         \item[\textsf{Red}:] after cutting the communication links to the devices, both will display the red light (this can lead to starvation because `G' is only sent once when activating the red light).
     \end{labeling}
-    \footnotetext[1]{Actually the correct term would be `pass through', but since we used the wrong one throughout the lab days, we are going to stick to `throughput'.}
+    \footnotetext[1]{Actually the correct term would be `pass through', but since we used the wrong one throughout the lab days, we are sticking to `throughput'.}
 \end{itemize}
 
 
@@ -51,4 +51,4 @@ Multiplexers are used to select the correct output signals corresponding to each
     \end{center}
 \end{figure}
 
-To tackle the starvation problem, we need a simple finite state machine that knows the current and next operation modes, triggering the reset signal of one device, if the FPGA is about to switch from \textsf{Red} to \textsf{Throughput}. We use a voltmeter to find the \texttt{rst} pin on the micro controller, by effectively short-circuiting all unconnected pins [?].
+To tackle the starvation problem, we need to add a simple finite state machine that knows the current and next operation modes, triggering the reset signal of one device, if the FPGA is about to switch from \textsf{Red} to \textsf{Throughput} -- all other operation mode transitions already work as desired. We use a voltmeter to find the actual \texttt{rst} pin on the micro controller, by effectively short-circuiting all unconnected pins at a time [?].
