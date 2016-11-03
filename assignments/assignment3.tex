@@ -26,11 +26,13 @@ Now we are ready for the real assignment: To launch a man-in-the-middle attack a
 
 \begin{itemize}
     \item[] \begin{labeling}{\textsf{Throughput}$^1$:}
-        \item[\textsf{Throughput}\footnote{Actually the correct term would be `pass through', but since we used the wrong one throughout the lab days, we are going to stick to `throughput'.}:] the FPGA passively relays the communication between the devices like a cable (the default setting);
+        \item[\textsf{Throughput}\footnotemark:] the FPGA passively relays the communication between the devices like a cable (the default setting);
         \item[\textsf{Green}:] manipulate the communication in a way that both micro controllers constantly show the green light;
         \item[\textsf{Red}:] after cutting the communication links to the devices, both will display the red light (this can lead to starvation because `G' is only sent once when activating the red light).
     \end{labeling}
+    \footnotetext[1]{Actually the correct term would be `pass through', but since we used the wrong one throughout the lab days, we are going to stick to `throughput'.}
 \end{itemize}
+
 
 As a side requirement we should to be able to cycle through the modes seamlessly, i.~e., no matter which mode $M$ the FPGA is in, we can always choose the next one $M'$ freely.
 
