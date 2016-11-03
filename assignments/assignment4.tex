@@ -14,19 +14,31 @@ To get past the penalties, we add a receiver to the design, locate the micro con
 
 From this point on, we pursue two different paths to solve the task.
 
-\subsubsection*{An easy solution}
-Following the first one, the FPGA does not need any further programming (see figure \ref{fig:as4-schematic-1}, p.~\pageref{fig:as4-schematic-1}, for a schematic of the setup). Instead, we run a script in the high-level language Python on the computer. It takes about 30 seconds to obtain the correct PIN by iterating over all possibilities \texttt{0000}--\texttt{9999} and telling the FPGA to reset the device, if it is wrong.
-
-\begin{figure}[tb]
+\begin{figure}[b!]
     \begin{center}
+        \hrule\vspace{1em}
         \input{assignments/images/assignment4-schematic-v1.tikz}
         \caption{In this setup, all possible PINs are computed on the computer and transmitted to the device. The FPGA just relays the communication and understands the computer's output bitstream to reset the mircrocontroller upon receiving a special command.}
         \label{fig:as4-schematic-1}
-        \vspace{1em}\hrule
     \end{center}
 \end{figure}
 
+\subsubsection*{An easy solution}
+Following the first one, the FPGA does not need any further programming (see figure \ref{fig:as4-schematic-1}, p.~\pageref{fig:as4-schematic-1}, for a schematic of the setup). Instead, we run a script in the high-level language Python on the computer. It takes about 30 seconds to obtain the correct PIN by iterating over all possibilities \texttt{0000}--\texttt{9999} and telling the FPGA to reset the device, if it is wrong.
+
 \subsubsection*{The fast way}
+The second method [shifts to the FPGA]. 
+We rewire the receiver to listen to the device's output.
+Now the FPGA resets the microcontroller on its own, whenever it receives the byte $49_{16}$, `I'. 
+To be able to send PINs, we add a transmitter (the output is connected to both, the computer's and the device's, \texttt{rx} lines). Now we only have to port the brute force algorithm to Verilog to run on the FPGA. We achieve this with the following finite 4-state machine.
+
+\begin{itemize}
+    \item[]\textsc{Start}: Initialise the PIN to $0000$; every digit it treated as its own byte.
+    \item[]\textsc{Send}: Transmit the most significant byte of the PIN and shift it one byte to the left; this is repeated four times to transmit every digit.
+    \item[]\textsc{Inc}: Increment the most significant byte of the PIN by one, passing possible carryovers to the next bytes.
+    \item[]\textsc{Receive}: If the device's answer starts with `I', reset it an go to \textsc{Send}; otherwise do nothing.
+\end{itemize}
+
 See figure \ref{fig:as4-schematic-2} (p.~\pageref{fig:as4-schematic-2}).
 
 Compared to the first approach, this solution is magnitues faster requiring only about 3 seconds to obtain the PIN.
