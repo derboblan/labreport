@@ -1,11 +1,13 @@
-\documentclass[a4paper, twoside, ngerman, 12pt]{scrartcl}
+% rubber: set program xelatex
+
+\documentclass[a4paper, 12pt]{scrartcl}
 \usepackage{amssymb}
 \usepackage{ifxetex}
 \ifxetex
     % XeLaTeX
     \usepackage{fontspec,xunicode,xltxtra}
     \usepackage{polyglossia}
-    \setmainlanguage[spelling=new,babelshorthands=true]{german}
+    \setmainlanguage{english}
     \setsansfont{Gillius ADF}
     \usepackage{ebgaramond}
     \usepackage[]{unicode-math}
@@ -14,7 +16,7 @@
 \else
     % default: pdfLaTeX
     \usepackage[utf8]{inputenc}
-    \usepackage[ngermanb]{babel}
+    \usepackage[english]{babel}
     \usepackage[T1]{fontenc}
     \usepackage[babel=true]{microtype}
     \usepackage{lmodern}
@@ -25,11 +27,15 @@
 \usepackage{parskip}
 \usepackage{svg}
 \usepackage{lscape}
-\usepackage[inner=2.3cm,outer=4.6cm,top=3.3cm,bottom=6.6cm]{geometry}
+\usepackage[inner=3.5cm,outer=3.5cm,top=3.3cm,bottom=6.6cm]{geometry}
 
 \usepackage[nottoc]{tocbibind}
 \usepackage[fixlanguage]{babelbib}
 %\selectbiblanguage{german}
+
+% Enable TikZ
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,intersections,through,backgrounds}
 
 \usepackage{graphicx}
 \usepackage{caption}
@@ -86,8 +92,9 @@
         \begin{center}
             \vfill
             \textsf{\textbf{\Huge{Hardware Security}}}\\[1.5em]
-            \textsf{\LARGE{Labreport}}
+            \textsf{\LARGE{Lab Report}}
             \vfill
+            Christian Steinfeldt and Gregor Häfner
         \end{center}
         \vfill
         \hrule
@@ -98,17 +105,16 @@
     \pagenumbering{arabic}
     \setcounter{page}{1}
     
-    \section*{Assignment 1}
-%    \input{tex/1-darstellung.tex}
+    \input{assignments/assignment1.tex}
     
-    \section*{Assignment 2}
-%    \input{tex/2-gefluechtete.tex}
+    \input{assignments/assignment2.tex}
     
-    \section*{Assignment 3}
-%    \input{tex/3-aktive.tex}
+    \newpage
+    \input{assignments/assignment3.tex}
     
-    \section*{Assignment 4}
-%    \input{tex/4-sonstiges.tex}
+    \newpage
+    \input{assignments/assignment4.tex}
     
-    \section*{Assignment 5}
+    \input{assignments/assignment5.tex}
+    
 \end{document}
