@@ -7,27 +7,39 @@
     \item simulation and testing in ISE
 \end{itemize}
 
-We implemented a \texttt{UART} transmitter and receiver.
+%\emph{Aufgabe: }Nach eingien einführenden Aufgabe, sollten wir einen UART Transmitter, dann einen UART-Reciver, und abschließend um beide miteinander zu Kombinieren Ein Echo auf dem FPGI zu Implementieren.
 
-\emph{Aufgabe: }Nach eingien einführenden Aufgabe, sollten wir einen UART Transmitter, dann einen UART-Reciver, und abschließend um beide miteinander zu Kombinieren Ein Echo auf dem FPGI zu Implementieren.
-
-
-\emph{Bearbeitung und Lösung: }Der Empfänger hat 3 Zustände $z_0$, $z_1$, $z_2$.\begin{itemize}
+After some small introducing assignments we were asked to implement an UART-transmitter and an UART-reciver and test them via test bench. Afterwards we should combine these two to implement an echo on the FPGI.
 
 
-\item[$z_0$:] Ausgangszustand warten auf fallende/steigende Flanke, die den Beginn der seriellen UART Kommunikation anzeigt.
-\item[$z_1$:] Empfangszustand: Für jedes Bit muss entsprechend der Übertragungsrate gewartet werden, bis das nächste gelesen werden kann. Die eingelesenen einzel Bits werden in einem Byte Array gespeichert, dass nach speichern eines Wertes ein Bit geshiftet wird, um das nächste Bit zu speichern. 
-\item[$z_2$:] im Stoppzustand wird der Bit-String wieder in den Augangszustand versetzt, außerdem wird Valid-Bit gestezt. Das heißt, dass das Byte nun ausgelesen werden kann (am Output anliegt). 
+%\emph{Bearbeitung und Lösung: }Der Empfänger hat 3 Zustände $z_0$, $z_1$, $z_2$.
+The UART-reciver has three different states $z_0$, $z_1$, $z_2$.
+\begin{itemize}
+
+
+\item[$z_0$:] Initial state: Waiting for falling/rising edge, which is showing the begin of an UART communication.
+%Ausgangszustand warten auf fallende/steigende Flanke, die den Beginn der seriellen UART Kommunikation anzeigt.
+\item[$z_1$:] Receiving state: For every bit you have to wait the appropriate time according to the transfer rate, until you can read the next bit. The individual bits read will be saved to a byte array. After saving a bit yo have to shift all the bit in the array, so the next read Bit can be saved to the 1st position.
+%Empfangszustand: Für jedes Bit muss entsprechend der Übertragungsrate gewartet werden, bis das nächste gelesen werden kann. Die eingelesenen einzel Bits werden in einem Byte Array gespeichert, dass nach speichern eines Wertes ein Bit geshiftet wird, um das nächste Bit zu speichern. 
+\item[$z_2$:] Stop state: In this state the bit-string will be reset to its initial state. Furthermore, the valid bit will be set, to show that the saved byte can be read through the output.
+%im Stoppzustand wird der Bit-String wieder in den Augangszustand versetzt, außerdem wird Valid-Bit gestezt. Das heißt, dass das Byte nun ausgelesen werden kann (am Output anliegt). 
 \end{itemize}
 
-\emph{Bearbeitung und Lösung: }Der Sender hat 4 Zustände $z_0$, $z_1$, $z_2$, $z_3$.\begin{itemize}
+%\emph{Bearbeitung und Lösung: }Der Sender hat 4 Zustände $z_0$, $z_1$, $z_2$, $z_3$.
+The UART-transmitter got four states $z_0$, $z_1$, $z_2$, $z_3$.
+\begin{itemize}
 
 
-\item[$z_0$:] Ausgangszustand wartet auf enable. Ausgabe ist auf 0.
-\item[$z_1$:] Die Augabe, wird dem 0. Bit eines 8-Bit Strings gleichgesetzt und das 8-Bit Sting wird um eine Stelle verschoben.
-\item[$z_2$:] Nachdem 8 Bits ausgelesen, bzw. gesendet wurden Wird der vorgang beendet.
-\item[$z_3$:] rdy wird auf 1 gesetzt, um anzuzeigen, das er bereit ist neue Daten zu senden.  
+\item[$z_0$:] Initial state: In the initial state, the transmitter is waiting for an enable. The Output is set to \verb+0+.
+%Ausgangszustand wartet auf enable. Ausgabe ist auf 0.
+\item[$z_1$:] Sending state: The output will be set to the value of the zeroth bit of an 8-bit string. Furthermore, all the bits of the 8-bit string will be shifted by one position.
+%Die Augabe, wird dem 0. Bit eines 8-Bit Strings gleichgesetzt und das 8-Bit Sting wird um eine Stelle verschoben.
+\item[$z_2$:] Checking state: in this state will be checked if the byte where shifted 8 times. If not, the transmitter will go back in sending state. If yes, the transmitter will go into the finished state.
+%Nachdem 8 Bits ausgelesen, bzw. gesendet wurden Wird der vorgang beendet.
+\item[$z_3$:] Finished state: in this state the byte was fully transmitted and rdy will be set to 1 to show, that the transmitter is ready to send new data.
+%rdy wird auf 1 gesetzt, um anzuzeigen, das er bereit ist neue Daten zu senden.  
 
 \end{itemize}
 
-\emph{Bearbeitung und Lösung: } Echo 
+%\emph{Bearbeitung und Lösung: } Echo 
+Echo

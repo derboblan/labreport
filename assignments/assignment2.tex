@@ -1,8 +1,11 @@
 \section*{Assignment 2}
-Throughput and Work with the oszilluscope.
 
-\emph{Aufgabe: } We should connect an USB Input to an output-Pin of the board and an input Pin on the Bouard, to the Output via USB. thurthermore we had to activate another Reset-output-Pin when we read a Specifc sign via USB. The Validation of the correct Implementation should be done with the osziluscope.
+In the second Assignment we should connect a USB Input to an output-Pin of the board and an input Pin on the Board, to the Output via USB. Furthermore we had to activate another Reset-output-Pin when we read a specific sign via USB. The Validation of the correct Implementation should be done with the oscilloscope.
+
+Our finished throughput contained a single UART-reciver. Practically the throughput was realized through wireing the USB-input to the output-pin and wireing the input-pin to the USB output. The only purpose of the UART-reciver was to check the USB-input for a specific ASCII-sign which was allocated to activate the reset function. This function would be needet in future assignments, see figure \ref{fig:as4-schematic-1} (p.~\pageref{fig:as4-schematic-1}) If the UART-reciver detected the demanded ASCII-singn the reset-pin would be set from \verb+0+ to \verb+1+. Even though this assignment looks like an easy task, the challenge was the assigning of in an output on the Papilo board. Furthermore the introduction to the oscilloscope and the first time use of this gadget was a challenge in itself.
 
 
-\emph{Bearbeitung und Lösung: } Der fertige Throughput arbeitete mit einem einzelnen UART-Reciver. Prinzipiell wurde der Throughput durch das verbinden der ein und ausgänge ralisiert. Der UART-Rciver diente zum erkennen eines besondern Zeichens, um dann wenn diese Zeichen erkannt wurde über einen gesonderten Ausgang ein Reset Signal zu schicken. Diese Funktion würde für Zukünftige Projekte wichtig sein.
-Die Schwierigkeit an Diesem Assignement, war das erstmalige auseinandersetzen mit dem zuweisen von Ein und Ausgängen auf dem Papilo Board. Außerdem wurde die Funktionalität des Throughputs mit Hilfe eines Osziluskopen überprüft. mit dessen Funktionsweise sich auseinander gesetzt werden musste.
+
+
+%\emph{Bearbeitung und Lösung: } Der fertige Throughput arbeitete mit einem einzelnen UART-Reciver. Prinzipiell wurde der Throughput durch das verbinden der ein und ausgänge ralisiert. Der UART-Rciver diente zum erkennen eines besondern Zeichens, um dann wenn diese Zeichen erkannt wurde über einen gesonderten Ausgang ein Reset Signal zu schicken. Diese Funktion würde für Zukünftige Projekte wichtig sein.
+%Die Schwierigkeit an Diesem Assignement, war das erstmalige auseinandersetzen mit dem zuweisen von Ein und Ausgängen auf dem Papilo Board. Außerdem wurde die Funktionalität des Throughputs mit Hilfe eines Osziluskopen überprüft. mit dessen Funktionsweise sich auseinander gesetzt werden musste.

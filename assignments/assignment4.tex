@@ -46,16 +46,19 @@ Now, we only have to port the brute force algorithm, i.~e., generation and trans
     \end{labeling}
 \end{itemize}
 
-Since transmission of the generated PINs reaches both, micro controller and computer, we just have to start a program that can read serial input from a USB port, like \texttt{screen}, before starting the attack and the last four digits of the printed output are the correct PIN. Obtaining it takes only about 3 seconds and thus, compared to the first approach, this one is magnitudes faster.
-
-\begin{figure}[tb]
+\begin{figure}[h]
     \begin{center}
+    	\hrule\vspace{1em}
         \input{assignments/images/assignment4-schematic-v2.tikz}
         \caption{Now the FPGA calculates the 4 digit numbers, sends them to the device and decodes the answer bitstream in order to reset the microcontroller. The computer is passive in this configuration and only needed as an output device, thus we ignore its transmissions.}
         \label{fig:as4-schematic-2}
         \vspace{1em}\hrule
     \end{center}
 \end{figure}
+
+Since transmission of the generated PINs reaches both, micro controller and computer, we just have to start a program that can read serial input from a USB port, like \texttt{screen}, before starting the attack and the last four digits of the printed output are the correct PIN. Obtaining it takes only about 3 seconds and thus, compared to the first approach, this one is magnitudes faster.
+
+
 
 
 
