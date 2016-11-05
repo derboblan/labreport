@@ -33,19 +33,13 @@
 		coordinate [yshift=3cm+0.4pt+1.333cm, label={ above right : \footnotesize{$\texttt{tx}_0$} }] (FPGA_tx0) at (FPGA.south west) % oben
 
 		% In/outputs  rechts oben
-		coordinate [yshift=3cm+0.4pt,                    label={ above left : \footnotesize{$\texttt{rx}_1$} }]      (FPGA_rx1)       at (FPGA.south east)  % unten
-		coordinate [yshift=3cm+0.4pt+0.666cm, label={ above left : \footnotesize{$\texttt{tx}_1$} }]      (FPGA_tx1)       at (FPGA.south east) % mitte
-		coordinate [yshift=3cm+0.4pt+1.333cm, label={ above left : \footnotesize{$\texttt{restart}$} }] (FPGA_restart) at (FPGA.south east) % oben
-		
-		% In/outputs  rechts unten
-		coordinate [yshift=0.666cm,           label={ below left : \footnotesize{$\texttt{rx}_2$} }]      (FPGA_rx2)        at (FPGA.south east)  % unten
-		coordinate [yshift=1.333cm,           label={ below left : \footnotesize{$\texttt{tx}_2$} }]      (FPGA_tx2)        at (FPGA.south east) % oben
+		coordinate [yshift=3cm+0.4pt+1.333cm, label={ above left : \footnotesize{$\texttt{LED}$} }] (FPGA_restart) at (FPGA.south east) % oben
 	;
 
 	% Logic
-% 	\node (Logic) at (FPGA.north) [comp, minimum height=1cm, minimum width=2cm, below, shift={(-0.45cm, -0.25cm)}] {}
-% 		node [caption] at (Logic.south west) { \textsf{\footnotesize{\textbf{Logic}}} }
-% 	;
+	\node (Logic) at (FPGA.south east) [comp, minimum height=1cm, minimum width=2cm, above left, shift={(-0.3cm, 0.5cm)}] {}
+		node [caption] at (Logic.south west) { \textsf{\footnotesize{\textbf{Logic}}} }
+	;
 
 	% Receiver
 	\node (Receiver) at (FPGA.south west) [component_small, above right, shift={(1, 0.5)}] {}
@@ -92,7 +86,11 @@
 	% FPGA internal
 			\draw[conn] (FPGA_rx0) -- ([xshift=0.5cm] FPGA_rx0) |- (Receiver_din);
 			\draw[conn] (Receiver_valid) -- ([xshift=0.5cm] Receiver_valid) |- (Transmitter_enable);
-			\draw[conn] (Receiver_data_out) -- ([xshift=1cm] Receiver_data_out) |- (Transmitter_data_in);
+			\draw[conn, name path=p1] (Receiver_data_out) -- ([xshift=1cm] Receiver_data_out) |- (Transmitter_data_in);
 			\draw[conn] (Transmitter_dout) -- ([xshift=-0.2cm]Transmitter_dout) |- (FPGA_tx0);
+			\draw[conn, name path=p2] (Receiver_data_out) -- ([xshift=1cm] Receiver_data_out) -- ([xshift=0.3cm] Logic.north west);
+			\draw[conn](Logic.north) |- (FPGA_restart);
+
+			\fill[name intersections={of=p1 and p2, total=\t}] (intersection-\t) circle (0.4mm);
 
 \end{tikzpicture}
